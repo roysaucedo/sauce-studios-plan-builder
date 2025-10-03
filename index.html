@@ -3,248 +3,363 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Vantopia — Build Your Van Kit</title>
+<title>Sauce Studios — Get Your Custom Quote</title>
 <style>
   :root{
-    --bg:#f7f7f5; --panel:#ffffff; --ink:#1a1a1a; --sub:#6b7280;
-    --brand:#1f6f63; --brand-2:#aac7be; --muted:#e9ecef;
-    --ok:#156d3f; --err:#a00020; --radius:18px;
-    --shadow:0 10px 30px rgba(10,20,10,.08);
+    --bg:#ffffff; --panel:#fafafa; --ink:#0a0a0a; --sub:#666666;
+    --brand-start:#FFEF00; --brand-end:#ff6b35; --muted:#e5e5e5;
+    --ok:#10b981; --err:#ef4444; --radius:16px;
+    --shadow:0 4px 20px rgba(0,0,0,.08);
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial}
-  .wrapper{max-width:1100px;margin:20px auto;padding:16px}
-  .header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap}
-  .brand{font-weight:800;letter-spacing:.04em}
-  .tagline{color:var(--sub);font-size:.95rem}
-  .stepper{display:flex;gap:6px;margin:10px 0 18px;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;padding-bottom:6px;scroll-snap-type:x proximity}
-  .stepper::-webkit-scrollbar{height:6px}
-  .stepper::-webkit-scrollbar-thumb{background:var(--muted);border-radius:999px}
-  .step{flex:0 0 auto;min-width:140px;white-space:nowrap;scroll-snap-align:start;position:relative;background:var(--panel);border:1px solid var(--muted);border-radius:12px;padding:8px 10px;text-align:center;font-weight:700;color:var(--sub);cursor:pointer;user-select:none}
-  .step:focus{outline:2px solid color-mix(in srgb, var(--brand) 50%, transparent)}
-  .step[data-active="true"]{border-color:var(--brand);color:var(--brand);box-shadow:0 0 0 2px color-mix(in srgb, var(--brand) 20%, transparent)}
-  .bar{height:6px;background:var(--muted);border-radius:999px;overflow:hidden;margin-top:8px}
-  .bar>span{display:block;height:100%;width:0;background:var(--brand);transition:width .35s ease}
-  @media (min-width:960px){
-    .stepper{display:grid;grid-template-columns:repeat(6,1fr);overflow:visible;padding-bottom:0;scroll-snap-type:none}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Helvetica,Arial,sans-serif}
+  .wrapper{max-width:1200px;margin:0 auto;padding:20px}
+  .header{text-align:center;margin-bottom:40px;padding:40px 20px;border-bottom:2px solid var(--muted)}
+  .logo{font-weight:900;font-size:2.2rem;letter-spacing:-.02em;background:linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
+  .tagline{color:var(--sub);font-size:1.15rem;margin-top:12px;max-width:700px;margin-left:auto;margin-right:auto;line-height:1.6}
+  .trust-line{margin-top:16px;color:var(--ink);font-weight:600;font-size:.95rem}
+  .trust-line span{background:linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .stepper{display:flex;gap:12px;margin:30px 0;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:4px 0 12px;scroll-snap-type:x proximity}
+  .stepper::-webkit-scrollbar{height:8px}
+  .stepper::-webkit-scrollbar-track{background:var(--muted);border-radius:999px}
+  .stepper::-webkit-scrollbar-thumb{background:linear-gradient(90deg, var(--brand-start), var(--brand-end));border-radius:999px}
+  .step{flex:0 0 auto;min-width:200px;scroll-snap-align:start;background:var(--panel);border:3px solid var(--muted);border-radius:12px;padding:16px 20px;text-align:center;font-weight:700;color:var(--sub);cursor:pointer;user-select:none;transition:all .2s ease;position:relative}
+  .step:hover{border-color:#ffb84d;transform:translateY(-2px)}
+  .step[data-active="true"]{border-color:var(--brand-end);color:var(--ink);background:#fff;box-shadow:0 4px 16px rgba(255,107,53,.2)}
+  .step[data-active="true"]::before{content:"";position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;background:linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%);border-radius:12px;z-index:-1}
+  .step-num{font-size:.85rem;opacity:.7;display:block;margin-bottom:4px}
+  .bar{height:8px;background:var(--muted);border-radius:999px;overflow:hidden;margin-top:20px;max-width:500px;margin-left:auto;margin-right:auto}
+  .bar>span{display:block;height:100%;width:0;background:linear-gradient(90deg, var(--brand-start) 0%, var(--brand-end) 100%);transition:width .4s ease}
+  @media (min-width:1024px){
+    .stepper{display:grid;grid-template-columns:repeat(4,1fr);overflow:visible;padding-bottom:0}
     .step{min-width:auto}
   }
-  .grid{display:grid;grid-template-columns:1fr 320px;gap:18px}
-  @media (max-width:960px){.grid{grid-template-columns:1fr}.summary{position:static}}
-  .panel{background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
-  .panel h2{margin:.25rem 0 6px;font-size:1.25rem}
-  .panel p.lead{color:var(--sub);margin:0 0 10px}
-  .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:8px}
-  @media (max-width:720px){.cards{grid-template-columns:1fr}}
-  .card{border:1px solid var(--muted);border-radius:16px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
-  .card .img{aspect-ratio:4/3;background:#f1f5f4}
-  .card .img img{width:100%;height:100%;object-fit:cover;display:block}
-  .card .body{padding:12px}
-  .card h3{margin:.1rem 0 .25rem;font-size:1rem}
-  .card .price{color:var(--ink);font-weight:700}
-  .card .sub{color:var(--sub);font-size:.9rem}
-  .card .select{margin:12px;gap:10px;display:flex;align-items:center;justify-content:space-between}
-  .checkwrap{display:flex;align-items:center;gap:10px}
-  .checkbox{width:22px;height:22px;border:2px solid var(--brand);border-radius:6px;display:grid;place-items:center;cursor:pointer;background:#fff;flex:0 0 22px}
-  .checkbox[data-on="true"]{background:var(--brand)}
-  .checkbox svg{width:14px;height:14px;stroke:#fff;stroke-width:3;fill:none;opacity:0;transition:opacity .2s}
-  .checkbox[data-on="true"] svg{opacity:1}
-  .none-pill{margin-left:auto;font-size:.85rem;color:var(--sub);cursor:pointer;text-decoration:underline}
-  .summary{position:sticky;top:12px;height:max-content}
-  .summary h3{margin:.25rem 0 .75rem}
-  .sum-row{display:flex;justify-content:space-between;gap:10px;margin:6px 0;color:var(--ink)}
-  .divider{height:1px;background:var(--muted);margin:10px 0}
-  .total{display:flex;justify-content:space-between;font-weight:800;font-size:1.1rem}
-  .note{font-size:.9rem;color:var(--sub)}
-  button,.btn{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:700}
-  .btn-primary{background:var(--brand);color:#fff}
-  .btn-ghost{background:#eef3f1;color:var(--brand)}
-  .nav{display:flex;justify-content:space-between;margin-top:16px}
-  .nav .left{display:flex;gap:10px}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media (max-width:720px){.form-grid{grid-template-columns:1fr}}
-  label{display:block;font-weight:700;margin-bottom:6px}
-  input,select,textarea{width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--muted);background:#fff;font:inherit}
-  textarea{min-height:110px;resize:vertical}
-  .alert{background:#fff3f3;border:1px solid #ffd7d7;color:var(--err);padding:12px;border-radius:12px;margin-top:10px}
-  .success{background:#ecfdf3;border:1px solid #c1f1d8;color:var(--ok);padding:12px;border-radius:12px;margin-top:10px}
-  .small{font-size:.85rem;color:var(--sub)}
-  .footer-note{margin-top:8px;color:var(--sub);font-size:.9rem}
+  .grid{display:grid;grid-template-columns:1fr 400px;gap:28px;margin-top:30px}
+  @media (max-width:1024px){.grid{grid-template-columns:1fr}.summary{position:static;order:-1}}
+  .panel{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:32px;border:1px solid var(--muted)}
+  .panel h2{margin:0 0 10px;font-size:1.8rem;font-weight:800}
+  .panel p.lead{color:var(--sub);margin:0 0 24px;font-size:1.05rem;line-height:1.7}
+  .timer{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%);color:#000;padding:8px 16px;border-radius:20px;font-size:.9rem;font-weight:700;margin-bottom:20px}
+  .packages{display:grid;grid-template-columns:repeat(1,1fr);gap:20px;margin:24px 0}
+  @media (max-width:900px){.packages{grid-template-columns:1fr}}
+  .package{border:3px solid var(--muted);border-radius:16px;background:#fff;padding:28px;cursor:pointer;transition:all .25s ease;position:relative;display:flex;flex-direction:column}
+  .package:hover{border-color:#ffb84d;transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+  .package[data-selected="true"]{border-color:var(--brand-end);box-shadow:0 8px 32px rgba(255,107,53,.25)}
+  .package[data-selected="true"]::before{content:"✓";position:absolute;top:16px;right:16px;width:32px;height:32px;background:linear-gradient(135deg, var(--brand-start), var(--brand-end));color:#000;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:1.2rem}
+  .package.popular{border-color:var(--brand-end);position:relative}
+  .package.popular::after{content:"MOST POPULAR";position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg, var(--brand-start), var(--brand-end));color:#000;padding:4px 16px;border-radius:20px;font-size:.75rem;font-weight:900;letter-spacing:.05em}
+  .package h3{margin:0 0 8px;font-size:1.4rem;font-weight:800}
+  .package .price{font-size:2rem;font-weight:900;margin:12px 0;background:linear-gradient(135deg, var(--brand-start), var(--brand-end));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .package .price-note{font-size:.85rem;color:var(--sub);margin-top:-8px;margin-bottom:12px}
+  .package .desc{color:var(--sub);font-size:.95rem;margin:12px 0;line-height:1.6}
+  .package ul{margin:16px 0;padding:0;list-style:none}
+  .package ul li{padding:8px 0;border-bottom:1px solid var(--muted);font-size:.95rem;display:flex;align-items:flex-start;gap:8px}
+  .package ul li:last-child{border:0}
+  .package ul li::before{content:"✓";color:#10b981;font-weight:900;flex-shrink:0}
+  .addons{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:24px 0}
+  @media (max-width:768px){.addons{grid-template-columns:1fr}}
+  .addon{border:2px solid var(--muted);border-radius:12px;padding:20px;background:#fff;cursor:pointer;transition:all .2s;display:flex;gap:16px;align-items:flex-start}
+  .addon:hover{border-color:#ffb84d;transform:translateY(-2px)}
+  .addon[data-selected="true"]{border-color:var(--brand-end);background:#fffbf5}
+  .checkbox{width:24px;height:24px;border:3px solid var(--muted);border-radius:6px;display:grid;place-items:center;flex-shrink:0;transition:all .2s;margin-top:2px}
+  .addon:hover .checkbox{border-color:#ffb84d}
+  .addon[data-selected="true"] .checkbox{background:linear-gradient(135deg, var(--brand-start), var(--brand-end));border-color:var(--brand-end)}
+  .checkbox svg{width:16px;height:16px;stroke:#000;stroke-width:3;fill:none;opacity:0;transition:opacity .2s}
+  .addon[data-selected="true"] .checkbox svg{opacity:1}
+  .addon-content{flex:1}
+  .addon h4{margin:0 0 6px;font-size:1.1rem;font-weight:700}
+  .addon .price{color:var(--brand-end);font-weight:800;font-size:1.1rem;margin:4px 0}
+  .addon .desc{color:var(--sub);font-size:.9rem;margin:6px 0 0;line-height:1.5}
+  .monthly-badge{display:inline-block;background:var(--muted);color:var(--ink);padding:2px 8px;border-radius:4px;font-size:.75rem;font-weight:700;margin-left:6px}
+  .summary{position:sticky;top:20px;height:max-content}
+  .summary h3{margin:0 0 20px;font-size:1.6rem;font-weight:800}
+  .sum-section{margin-bottom:20px}
+  .sum-section-title{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--sub);font-weight:700;margin-bottom:8px}
+  .sum-row{display:flex;justify-content:space-between;gap:12px;margin:8px 0;color:var(--ink);font-size:.95rem;padding:8px 0}
+  .sum-row .label{color:var(--sub)}
+  .divider{height:2px;background:var(--muted);margin:20px 0}
+  .total{display:flex;justify-content:space-between;font-weight:900;font-size:1.6rem;padding:16px 0;background:linear-gradient(135deg, var(--brand-start), var(--brand-end));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .monthly-total{display:flex;justify-content:space-between;font-weight:700;font-size:1.2rem;padding:12px 0;color:var(--ink)}
+  .note{font-size:.85rem;color:var(--sub);line-height:1.6;margin-top:16px;padding:16px;background:var(--panel);border-radius:8px;border-left:4px solid var(--brand-end)}
+  .urgency{background:linear-gradient(135deg, #fff9e6 0%, #ffe8cc 100%);border:2px solid #ffb84d;border-radius:12px;padding:16px;margin:20px 0;text-align:center}
+  .urgency strong{color:var(--brand-end);font-size:1.1rem}
+  button,.btn{cursor:pointer;border:0;border-radius:12px;padding:16px 32px;font-weight:700;font-size:1.05rem;transition:all .2s;font-family:inherit}
+  .btn-primary{background:linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%);color:#000;box-shadow:0 4px 16px rgba(255,107,53,.3)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(255,107,53,.4)}
+  .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+  .btn-ghost{background:#fff;color:var(--ink);border:2px solid var(--muted)}
+  .btn-ghost:hover{border-color:#ffb84d}
+  .nav{display:flex;justify-content:space-between;margin-top:32px;gap:12px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+  @media (max-width:768px){.form-grid{grid-template-columns:1fr}}
+  label{display:block;font-weight:700;margin-bottom:8px;color:var(--ink);font-size:.95rem}
+  input,select,textarea{width:100%;padding:14px;border-radius:10px;border:2px solid var(--muted);background:#fff;color:var(--ink);font:inherit;transition:border-color .2s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand-end)}
+  textarea{min-height:120px;resize:vertical}
+  .alert{background:#fef2f2;border:2px solid var(--err);color:#991b1b;padding:16px;border-radius:12px;margin-top:16px}
+  .success{background:#f0fdf4;border:2px solid var(--ok);color:#065f46;padding:20px;border-radius:12px;margin-top:16px;font-size:1.05rem}
+  .footer-note{margin-top:20px;color:var(--sub);font-size:.9rem;text-align:center;padding:20px}
+  .social-proof{display:flex;align-items:center;justify-content:center;gap:20px;margin:20px 0;padding:16px;background:var(--panel);border-radius:12px}
+  .social-proof-item{text-align:center}
+  .social-proof-item .num{font-size:1.8rem;font-weight:900;background:linear-gradient(135deg, var(--brand-start), var(--brand-end));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .social-proof-item .label{font-size:.85rem;color:var(--sub);margin-top:4px}
+  .comparison{margin:24px 0;overflow-x:auto}
+  .comparison table{width:100%;border-collapse:collapse;background:#fff}
+  .comparison th,.comparison td{padding:14px;text-align:left;border-bottom:1px solid var(--muted)}
+  .comparison th{background:var(--panel);font-weight:700;font-size:.9rem}
+  .comparison .check{color:#10b981;font-weight:900;text-align:center}
+  @media (max-width:768px){.social-proof{flex-direction:column;gap:12px}}
 </style>
 </head>
 <body>
 <div class="wrapper">
   <div class="header">
-    <div>
-      <div class="brand">Build Your Van Kit</div>
-      <div class="tagline">Choose your layout in 5 easy steps. We’ll follow up to confirm and process payment.</div>
+    <div class="logo">SAUCE STUDIOS</div>
+    <div class="tagline">Get your custom website quote in under 3 minutes. Trusted by 50+ Orange County service businesses.</div>
+    <div class="social-proof">
+      <div class="social-proof-item"><div class="num">50+</div><div class="label">OC Businesses</div></div>
+      <div class="social-proof-item"><div class="num">4.9★</div><div class="label">Average Rating</div></div>
+      <div class="social-proof-item"><div class="num">2-8wk</div><div class="label">Launch Time</div></div>
     </div>
-    <div style="min-width:180px">
+    <div style="max-width:500px;margin:20px auto 0">
       <div class="bar" aria-hidden="true"><span id="progress"></span></div>
     </div>
   </div>
 
-  <div class="stepper" id="stepper" role="tablist" aria-label="Steps">
-    <div class="step" data-active="true" tabindex="0">1 · Bed Base</div>
-    <div class="step" tabindex="0">2 · Flooring</div>
-    <div class="step" tabindex="0">3 · Panels</div>
-    <div class="step" tabindex="0">4 · Front Module</div>
-    <div class="step" tabindex="0">5 · Accessories</div>
-    <div class="step" tabindex="0">6 · Details</div>
+  <div class="stepper" id="stepper" role="tablist">
+    <div class="step" data-active="true" tabindex="0"><span class="step-num">Step 1</span>Choose Package</div>
+    <div class="step" tabindex="0"><span class="step-num">Step 2</span>Add Services</div>
+    <div class="step" tabindex="0"><span class="step-num">Step 3</span>Monthly Add-Ons</div>
+    <div class="step" tabindex="0"><span class="step-num">Step 4</span>Your Details</div>
   </div>
 
   <div class="grid">
     <div id="steps"></div>
     <aside class="summary panel" aria-live="polite">
-      <h3>Your Build</h3>
+      <h3>Your Investment</h3>
       <div id="summaryLines"></div>
       <div class="divider"></div>
-      <div class="total"><span>Estimated Total</span><span id="sumTotal">$0</span></div>
-      <p class="note">Prices are estimates; tax, shipping & installation are finalized by our team.</p>
+      <div class="total"><span>One-Time</span><span id="sumTotal">$0</span></div>
+      <div class="monthly-total" id="monthlyTotalRow" style="display:none"><span>Monthly</span><span id="monthlyTotal">$0</span></div>
+      <p class="note"><strong>Next Steps:</strong> Submit to get your detailed proposal. We'll schedule a free 30-minute consultation to discuss your vision and finalize pricing.</p>
     </aside>
   </div>
 
-  <p class="footer-note small">Your selections auto-save in this browser.</p>
+  <p class="footer-note">🔒 Your information is saved locally. We respect your privacy.</p>
   <div id="submitStatus"></div>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-  /* ======== 0) CONFIG ======== */
-  // Points to your serverless function (Netlify). For Vercel, change to /api/vantopia-submit
-  const WEBHOOK_URL = "/.netlify/functions/vantopia-submit";
+  const WEBHOOK_URL = "/.netlify/functions/sauce-quote-submit";
 
-  const CATALOG = {
-    bed_base: {
-      title: "Step 1 · Bed Base Kit",
-      type: "single", required: true,
-      options: [
-        { id:"raised_bed", name:"Raised Bed Cabinetry Kit", price: 8590, img:"https://static.wixstatic.com/media/2d2f9b_acc60ec5fa354a51960e85c478633297~mv2.png/v1/fill/w_1960,h_1102,al_c,q_95,usm_0.66_1.00_0.01,enc_avif,quality_auto/2d2f9b_acc60ec5fa354a51960e85c478633297~mv2.png", blurb:"Bedframe, overheads, galley, tray table, closet, accessory cabs, mounting rail, hardware." },
-        { id:"dinette_bed", name:"Dinette Bed Cabinetry Kit", price: 7890, img:"https://static.wixstatic.com/media/2d2f9b_c4b2a806730b46c78043e9880ed8206e~mv2.png/v1/fill/w_1960,h_1102,al_c,q_95,usm_0.66_1.00_0.01,enc_avif,quality_auto/2d2f9b_c4b2a806730b46c78043e9880ed8206e~mv2.png", blurb:"Convertible dinette to bed plus overheads, galley, tray, closet, accessories." },
+  const PACKAGES = {
+    starter: {
+      id: "starter",
+      name: "Starter Package",
+      price: 4500,
+      desc: "Perfect for new businesses establishing their online presence.",
+      features: [
+        "5-page professional website",
+        "Mobile responsive design",
+        "Contact forms & CTAs",
+        "Basic SEO setup",
+        "Google Analytics",
+        "30 days post-launch support"
       ]
     },
-    flooring: {
-      title: "Step 2 · Flooring",
-      type: "single", required: true,
-      options: [{ id:"insul_euro", name:"Insulated Europly Flooring", price: 2850, img:"", blurb:"Interlocking sections, 5\" seam insulation, trims & hardware." }]
-    },
-    panels: {
-      title: "Step 3 · Wall & Ceiling Panels",
-      type: "single", required: true,
-      options: [
-        { id:"acm", name:"ACM Paneling", price: 1850, img:"", blurb:"Durable aluminum composite." },
-        { id:"melamine", name:"Melamine Ply Paneling", price: 1150, img:"", blurb:"Lightweight & clean." }
+    professional: {
+      id: "professional",
+      name: "Professional Package",
+      price: 7500,
+      popular: true,
+      desc: "Our most popular choice for growing service businesses.",
+      features: [
+        "Up to 10 custom pages",
+        "Advanced custom design",
+        "Online booking OR basic store",
+        "Blog/news section",
+        "Lead capture system",
+        "Local SEO optimization",
+        "3 months SEO service included",
+        "60 days post-launch support"
       ]
     },
-    front_module: {
-      title: "Step 4 · Front Module",
-      type: "single-or-none", required: false,
-      options: [
-        { id:"pantry_combo", name:"Pantry Combo Module", price: 1950, img:"", blurb:"Compact pantry storage." },
-        { id:"window_combo", name:"Window Combo Module", price: 1950, img:"", blurb:"Window + storage." },
-        { id:"indoor_bath", name:"Preassembled Indoor Bathroom Module", price: 9950, img:"", blurb:"Self-contained bathroom." }
-      ]
-    },
-    accessories: {
-      title: "Step 5 · Accessories",
-      type: "multi", required: false,
-      options: [
-        { id:"bike_slider", name:"Bike & Storage Slider", price: 750, img:"", blurb:"Slide-out base for bikes & gear." },
-        { id:"dinette_cushions", name:"Dinette Cushions", price: 1750, img:"", blurb:"Upholstered cushions sized to our dinette." },
-        { id:"switch_fuse", name:"Prewired Switch & Fuse Panel", price: 450, img:"", blurb:"Clean power distribution." }
+    premium: {
+      id: "premium",
+      name: "Premium Package",
+      price: 12500,
+      desc: "Complete solution with marketing for serious growth.",
+      features: [
+        "Unlimited pages",
+        "Full custom functionality",
+        "E-commerce with 50+ products",
+        "Professional photo/video shoot",
+        "Advanced integrations (CRM, booking, etc.)",
+        "6 months SEO + Social included",
+        "Priority support for 90 days",
+        "Conversion optimization"
       ]
     }
   };
 
-  /* ======== 1) STATE ======== */
-  const STATE_KEY = "vantopia.build.v2";
+  const ONE_TIME_ADDONS = {
+    booking: { id:"booking", name:"Online Booking System", price: 2500, desc:"24/7 appointment scheduling with calendar sync and automated reminders." },
+    ecommerce: { id:"ecommerce", name:"E-Commerce Store (25 products)", price: 3500, desc:"Full shopping cart, payment processing, and inventory management." },
+    photo_video: { id:"photo_video", name:"Photo & Video Content", price: 2500, desc:"Half-day professional shoot at your location. Perfect for home services, retail, and restaurants." },
+    membership: { id:"membership", name:"Client Portal/Login Area", price: 3500, desc:"Secure member area with exclusive content, document sharing, or course access." },
+    multilingual: { id:"multilingual", name:"Spanish Language Version", price: 1500, desc:"Full site translation to reach Orange County's diverse market." },
+    advanced_seo: { id:"advanced_seo", name:"SEO Launch Package (3 months)", price: 2400, desc:"Keyword research, on-page optimization, local citations, and monthly reports." }
+  };
+
+  const MONTHLY_ADDONS = {
+    seo: { id:"seo", name:"Ongoing SEO", price: 800, desc:"Monthly optimization, content updates, and ranking reports." },
+    social: { id:"social", name:"Social Media Management", price: 1200, desc:"12 posts/month on Instagram + Facebook with engagement monitoring." },
+    email: { id:"email", name:"Email Marketing", price: 600, desc:"Monthly newsletter design, automation, and list management." },
+    ads: { id:"ads", name:"Paid Ads Management", price: 1500, desc:"Google or Meta ads optimization and reporting (ad spend separate)." }
+  };
+
+  const STATE_KEY = "sauce.quote.v2";
   let state = {};
   try { state = JSON.parse(localStorage.getItem(STATE_KEY) || "{}"); } catch(_) { state = {}; }
+  
   const money = n => `$${Number(n||0).toLocaleString()}`;
-
-  /* ======== 2) DOM HOOKS ======== */
   const stepsEl = document.getElementById("steps");
   const progressEl = document.getElementById("progress");
   const stepperEl = document.getElementById("stepper");
 
-  const groupKeys = Object.keys(CATALOG);
-  const detailsStepIndex = groupKeys.length;
+  const TOTAL_STEPS = 4;
   let current = Number(state.__step || 0);
 
   function setStep(i){
-    current = Math.max(0, Math.min(i, detailsStepIndex));
-    state.__step = current; persist();
+    current = Math.max(0, Math.min(i, TOTAL_STEPS - 1));
+    state.__step = current;
+    persist();
     updateUI();
-    scrollTo({ top:0, behavior:"smooth" });
+    window.scrollTo({ top:0, behavior:"smooth" });
   }
 
   function updateUI(){
     [...stepperEl.children].forEach((el, idx)=>{ el.dataset.active = (idx===current); });
-    const pct = (current/(detailsStepIndex))*100;
-    progressEl.style.width = pct+"%";
+    progressEl.style.width = ((current+1)/TOTAL_STEPS*100)+"%";
 
     stepsEl.innerHTML = "";
-    if(current < detailsStepIndex){
-      const key = groupKeys[current];
-      stepsEl.appendChild(renderStep(key, CATALOG[key]));
-    }else{
-      stepsEl.appendChild(renderDetails());
-    }
+    if(current === 0) stepsEl.appendChild(renderPackages());
+    else if(current === 1) stepsEl.appendChild(renderOneTimeAddons());
+    else if(current === 2) stepsEl.appendChild(renderMonthlyAddons());
+    else if(current === 3) stepsEl.appendChild(renderDetails());
+    
     renderSummary();
     scrollActiveStepIntoView();
   }
 
-  /* clickable stepper */
   [...stepperEl.children].forEach((el, idx)=>{
     el.addEventListener("click", ()=>setStep(idx));
     el.addEventListener("keypress", (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); setStep(idx);} });
   });
 
-  /* ======== 3) STEP PANELS ======== */
-  function renderStep(key, cfg){
+  function renderPackages(){
     const panel = div("panel");
-    panel.innerHTML = `<h2>${cfg.title}</h2><p class="lead">${leadText(key)}</p>`;
-    const wrap = div("cards");
-    const selected = state[key] ?? (cfg.type==="multi"? [] : null);
+    panel.innerHTML = `
+      <div class="timer">⏱️ Takes less than 3 minutes</div>
+      <h2>Choose Your Website Package</h2>
+      <p class="lead">Select the foundation that matches your business goals. All packages include mobile-responsive design, hosting setup, and post-launch support.</p>
+    `;
 
-    cfg.options.forEach(opt=>{
-      const card = div("card");
-      const img = div("img");
-      if(opt.img){ img.appendChild(imgTag(opt.img, opt.name)); }
-      card.appendChild(img);
-
-      const body = div("body");
-      body.innerHTML = `
-        <h3>${opt.name}</h3>
-        <div class="price">${money(opt.price)}</div>
-        <div class="sub">${opt.blurb || ""}</div>
+    const grid = div("packages");
+    Object.values(PACKAGES).forEach(pkg=>{
+      const card = div("package");
+      if(pkg.popular) card.classList.add("popular");
+      card.dataset.selected = state.package === pkg.id ? "true" : "false";
+      
+      card.innerHTML = `
+        <h3>${pkg.name}</h3>
+        <div class="price">${money(pkg.price)}</div>
+        <div class="price-note">one-time investment</div>
+        <div class="desc">${pkg.desc}</div>
+        <ul>${pkg.features.map(f=>`<li>${f}</li>`).join("")}</ul>
       `;
-      card.appendChild(body);
-
-      const sel = div("select");
-      const check = checkboxEl(isChecked(cfg, selected, opt.id));
-      const label = span(opt.name);
-      const checkWrap = div("checkwrap"); checkWrap.append(check,label);
-
-      const toggle = ()=>{ toggleSelection(cfg,key,opt.id,check); };
-      sel.addEventListener('click', toggle);
-      check.addEventListener("click", e=>{ e.stopPropagation(); toggle(); });
-
-      sel.appendChild(checkWrap);
-      card.appendChild(sel);
-      wrap.appendChild(card);
+      
+      card.onclick = ()=>{
+        state.package = pkg.id;
+        persist();
+        updateUI();
+      };
+      
+      grid.appendChild(card);
     });
 
-    if(cfg.type==="single-or-none"){
-      const none = document.createElement("button");
-      none.type="button";
-      none.className="none-pill";
-      none.textContent = state[key] ? "Clear selection" : "Skip this step";
-      none.onclick = ()=>{ delete state[key]; persist(); updateUI(); };
-      panel.appendChild(none);
-    }
+    panel.appendChild(grid);
+    
+    const urgency = div("urgency");
+    urgency.innerHTML = `<strong>🎁 Limited Time:</strong> Book your free consultation this week and get a complimentary website audit ($500 value)`;
+    panel.appendChild(urgency);
+    
+    panel.appendChild(navButtons());
+    return panel;
+  }
 
-    panel.appendChild(wrap);
+  function renderOneTimeAddons(){
+    const panel = div("panel");
+    panel.innerHTML = `
+      <h2>Enhance Your Website</h2>
+      <p class="lead">Add powerful features to maximize your investment. These are one-time additions to your package.</p>
+    `;
+
+    const grid = div("addons");
+    Object.values(ONE_TIME_ADDONS).forEach(addon=>{
+      const card = div("addon");
+      card.dataset.selected = (state.oneTime || []).includes(addon.id) ? "true" : "false";
+      
+      const check = checkboxEl(card.dataset.selected === "true");
+      const content = div("addon-content");
+      content.innerHTML = `
+        <h4>${addon.name}</h4>
+        <div class="price">${money(addon.price)}</div>
+        <div class="desc">${addon.desc}</div>
+      `;
+      
+      card.append(check, content);
+      card.onclick = ()=>toggleAddon("oneTime", addon.id);
+      grid.appendChild(card);
+    });
+
+    panel.appendChild(grid);
+    panel.appendChild(navButtons());
+    return panel;
+  }
+
+  function renderMonthlyAddons(){
+    const panel = div("panel");
+    panel.innerHTML = `
+      <h2>Ongoing Marketing Services</h2>
+      <p class="lead">Keep growing with our monthly marketing services. Choose what fits your budget and goals. <strong>Optional — skip if you prefer to handle marketing in-house.</strong></p>
+    `;
+
+    const grid = div("addons");
+    Object.values(MONTHLY_ADDONS).forEach(addon=>{
+      const card = div("addon");
+      card.dataset.selected = (state.monthly || []).includes(addon.id) ? "true" : "false";
+      
+      const check = checkboxEl(card.dataset.selected === "true");
+      const content = div("addon-content");
+      content.innerHTML = `
+        <h4>${addon.name}<span class="monthly-badge">MONTHLY</span></h4>
+        <div class="price">${money(addon.price)}/mo</div>
+        <div class="desc">${addon.desc}</div>
+      `;
+      
+      card.append(check, content);
+      card.onclick = ()=>toggleAddon("monthly", addon.id);
+      grid.appendChild(card);
+    });
+
+    panel.appendChild(grid);
+    
+    const skipNote = div("note");
+    skipNote.innerHTML = `<strong>Not ready for monthly services?</strong> No problem! You can add these later as your business grows.`;
+    panel.appendChild(skipNote);
+    
     panel.appendChild(navButtons());
     return panel;
   }
@@ -252,123 +367,174 @@ document.addEventListener("DOMContentLoaded", function() {
   function renderDetails(){
     const panel = div("panel");
     panel.innerHTML = `
-      <h2>Step 6 · Your Details</h2>
-      <p class="lead">Tell us about your van and how to reach you. We’ll confirm availability and finalize payment.</p>
+      <h2>Almost Done! Tell Us About Your Business</h2>
+      <p class="lead">We'll use this info to prepare your custom proposal and schedule your free 30-minute consultation.</p>
       <div class="form-grid">
-        <div><label for="name">Full Name</label><input id="name" placeholder="Jane Doe" value="${state.name||""}"></div>
-        <div><label for="email">Email</label><input id="email" type="email" placeholder="you@example.com" value="${state.email||""}"></div>
-        <div><label for="phone">Phone</label><input id="phone" placeholder="(###) ###-####" value="${state.phone||""}"></div>
-        <div><label for="van">Van Model</label><select id="van">${optionList(["Sprinter 144","Sprinter 170","Transit Long","Transit Extended","Promaster 136","Promaster 159"], state.van)}</select></div>
-        <div><label for="install">Installation Preference</label><select id="install">${optionList(["Self install","Factory install at Vantopia","Undecided"], state.install)}</select></div>
-        <div><label for="timeline">Target Timeline</label><select id="timeline">${optionList(["ASAP","1–2 months","3–4 months","Just planning"], state.timeline)}</select></div>
-        <div style="grid-column:1/-1"><label for="notes">Notes</label><textarea id="notes" placeholder="Any specific needs, add-ons, or questions?">${state.notes||""}</textarea></div>
-      </div>
-      <div class="nav">
-        <div class="left">
-          <button class="btn btn-ghost" type="button" id="backBtn">← Back</button>
+        <div><label for="name">Your Name *</label><input id="name" placeholder="John Smith" value="${state.name||""}" required></div>
+        <div><label for="business">Business Name *</label><input id="business" placeholder="Smith's Plumbing" value="${state.business||""}" required></div>
+        <div><label for="email">Email Address *</label><input id="email" type="email" placeholder="john@smithplumbing.com" value="${state.email||""}" required></div>
+        <div><label for="phone">Phone Number *</label><input id="phone" placeholder="(714) 555-0100" value="${state.phone||""}" required></div>
+        <div>
+          <label for="industry">Industry *</label>
+          <select id="industry" required>
+            ${optionList([
+              "Select your industry...",
+              "Home Services (Plumbing, HVAC, Electric, etc.)",
+              "Medical/Dental/Healthcare",
+              "Legal Services",
+              "Real Estate",
+              "Retail/E-Commerce",
+              "Restaurant/Food Service",
+              "Fitness/Wellness",
+              "Beauty/Salon/Spa",
+              "Auto Services",
+              "Professional Services (Accounting, Consulting, etc.)",
+              "Other"
+            ], state.industry)}
+          </select>
         </div>
         <div>
-          <button id="submitBtn" class="btn btn-primary" type="button">Submit Build</button>
+          <label for="timeline">When do you want to launch?</label>
+          <select id="timeline">
+            ${optionList([
+              "Select timeline...",
+              "ASAP (1-2 months)",
+              "3-4 months",
+              "5-6 months",
+              "Just exploring options"
+            ], state.timeline)}
+          </select>
+        </div>
+        <div style="grid-column:1/-1">
+          <label for="website">Current Website (if any)</label>
+          <input id="website" type="url" placeholder="https://youroldsite.com" value="${state.website||""}">
+        </div>
+        <div style="grid-column:1/-1">
+          <label for="goals">What are your main goals for this website?</label>
+          <textarea id="goals" placeholder="Example: Generate more leads, showcase our work, allow online booking, improve our Google ranking...">${state.goals||""}</textarea>
         </div>
       </div>
+      
+      <div class="urgency" style="margin-top:24px">
+        <strong>🚀 Next Step:</strong> After you submit, we'll email you within 24 hours with your detailed proposal and scheduling link for your free consultation.
+      </div>
+      
+      <div class="nav">
+        <button class="btn btn-ghost" type="button" id="backBtn">← Back</button>
+        <button id="submitBtn" class="btn btn-primary" type="button">Get My Custom Proposal →</button>
+      </div>
     `;
+    
     queueMicrotask(()=>{
-      ["name","email","phone","van","install","timeline","notes"].forEach(id=>{
+      ["name","business","email","phone","industry","timeline","website","goals"].forEach(id=>{
         const el = panel.querySelector("#"+id);
         el && el.addEventListener("input", ()=>{ state[id] = el.value; persist(); });
       });
       panel.querySelector("#submitBtn").addEventListener("click", submitOrder);
-      panel.querySelector("#backBtn").addEventListener("click", ()=> setStep(detailsStepIndex-1));
+      panel.querySelector("#backBtn").addEventListener("click", ()=> setStep(current-1));
     });
     return panel;
   }
 
   function navButtons(){
     const nav = div("nav");
-    const left = div("left");
     const back = button("btn btn-ghost","← Back", ()=> setStep(current-1));
-    if(current>0) left.appendChild(back);
-    const next = button("btn btn-primary","Next →", ()=> setStep(current+1));
-    nav.append(left, next);
+    const next = button("btn btn-primary","Continue →", ()=> setStep(current+1));
+    if(current > 0) nav.appendChild(back);
+    if(!state.package && current === 0){
+      const notice = div("");
+      notice.style.cssText = "color:var(--sub);font-size:.9rem;text-align:center;padding:12px";
+      notice.textContent = "👆 Select a package to continue";
+      nav.appendChild(notice);
+    }else{
+      nav.appendChild(next);
+    }
     return nav;
   }
 
-  /* ======== 4) SELECTION LOGIC ======== */
-  function isChecked(cfg, selected, id){
-    if(cfg.type==="multi") return Array.isArray(selected) && selected.includes(id);
-    return selected === id;
-  }
-  function toggleSelection(cfg,key,id){
-    if(cfg.type==="multi"){
-      const arr = Array.isArray(state[key]) ? state[key] : [];
-      const i = arr.indexOf(id);
-      if(i>=0){ arr.splice(i,1); } else { arr.push(id); }
-      state[key] = arr;
-    }else{
-      if(state[key] === id){ delete state[key]; } else { state[key] = id; }
-    }
-    persist(); updateUI();
+  function toggleAddon(type, id){
+    const arr = Array.isArray(state[type]) ? state[type] : [];
+    const idx = arr.indexOf(id);
+    if(idx >= 0) arr.splice(idx, 1);
+    else arr.push(id);
+    state[type] = arr;
+    persist();
+    updateUI();
   }
 
-  /* ======== 5) SUMMARY ======== */
   function renderSummary(){
     const box = document.getElementById("summaryLines");
     box.innerHTML = "";
-    let total = 0;
+    let oneTimeTotal = 0;
+    let monthlyTotal = 0;
 
-    groupKeys.forEach(k=>{
-      const cfg = CATALOG[k];
-      const sel = state[k];
-      let lines = [];
+    if(state.package){
+      const pkg = PACKAGES[state.package];
+      const section = div("sum-section");
+      section.innerHTML = `<div class="sum-section-title">Website Package</div>`;
+      section.appendChild(row(pkg.name, money(pkg.price)));
+      box.appendChild(section);
+      oneTimeTotal += pkg.price;
+    }
 
-      if(cfg.type==="multi" && Array.isArray(sel)){
-        lines = cfg.options.filter(o=>sel.includes(o.id));
-      }else if(sel){
-        const one = cfg.options.find(o=>o.id===sel);
-        if(one) lines = [one];
-      }
+    if(state.oneTime && state.oneTime.length){
+      const section = div("sum-section");
+      section.innerHTML = `<div class="sum-section-title">One-Time Add-Ons</div>`;
+      state.oneTime.forEach(id=>{
+        const addon = ONE_TIME_ADDONS[id];
+        if(addon){
+          section.appendChild(row(addon.name, money(addon.price)));
+          oneTimeTotal += addon.price;
+        }
+      });
+      box.appendChild(section);
+    }
 
-      const title = div("small");
-      title.textContent = cfg.title.replace(/Step \d+ · /,"");
-      box.appendChild(title);
+    if(state.monthly && state.monthly.length){
+      const section = div("sum-section");
+      section.innerHTML = `<div class="sum-section-title">Monthly Services</div>`;
+      state.monthly.forEach(id=>{
+        const addon = MONTHLY_ADDONS[id];
+        if(addon){
+          section.appendChild(row(addon.name, money(addon.price)+"/mo"));
+          monthlyTotal += addon.price;
+        }
+      });
+      box.appendChild(section);
+    }
 
-      if(!lines.length){
-        box.appendChild(row("—",""));
-      }else{
-        lines.forEach(o=>{
-          total += o.price;
-          box.appendChild(row(o.name, money(o.price)));
-        });
-      }
-      box.appendChild(div("divider"));
-    });
-
-    document.getElementById("sumTotal").textContent = money(total);
+    document.getElementById("sumTotal").textContent = money(oneTimeTotal);
+    
+    const monthlyRow = document.getElementById("monthlyTotalRow");
+    if(monthlyTotal > 0){
+      monthlyRow.style.display = "flex";
+      document.getElementById("monthlyTotal").textContent = money(monthlyTotal)+"/mo";
+    }else{
+      monthlyRow.style.display = "none";
+    }
   }
 
-  /* ======== 6) SUBMIT via serverless function ======== */
   async function submitOrder(){
     const missing = [];
-    groupKeys.forEach(k=>{
-      const cfg = CATALOG[k];
-      if(cfg.required && cfg.type!=="multi" && !state[k]) missing.push(cfg.title);
-    });
-    if(!state.name) missing.push("Name");
-    if(!state.email) missing.push("Email");
+    if(!state.package) missing.push("Website Package");
+    if(!state.name) missing.push("Your Name");
+    if(!state.business) missing.push("Business Name");
+    if(!state.email) missing.push("Email Address");
+    if(!state.phone) missing.push("Phone Number");
+    if(!state.industry || state.industry.startsWith("Select")) missing.push("Industry");
 
     const status = document.getElementById("submitStatus");
     status.innerHTML = "";
 
     if(missing.length){
-      status.innerHTML = `<div class="alert"><strong>Please complete:</strong> ${missing.join(", ")}</div>`;
+      status.innerHTML = `<div class="alert"><strong>⚠️ Please complete the following:</strong><br>${missing.join(", ")}</div>`;
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
       return;
     }
 
-    // Build payload (same as before)
     const payload = buildPayload();
-
     const btn = document.getElementById('submitBtn');
-    if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
+    if(btn){ btn.disabled = true; btn.textContent = 'Submitting your quote...'; }
 
     try{
       const res = await fetch(WEBHOOK_URL, {
@@ -376,77 +542,131 @@ document.addEventListener("DOMContentLoaded", function() {
         headers:{ "Content-Type":"application/json" },
         body: JSON.stringify(payload)
       });
-      const text = await res.text();
+      
       if(!res.ok){
-        console.error('Serverless failed', res.status, text);
-        throw new Error('Bad response '+res.status);
+        console.error('Submission failed', res.status);
+        throw new Error('Server error '+res.status);
       }
-      status.innerHTML = `<div class="success"><strong>Thank you!</strong> Your build was submitted. We’ll follow up by email shortly.</div>`;
+      
+      status.innerHTML = `
+        <div class="success">
+          <strong>🎉 Success! Your quote has been submitted.</strong><br><br>
+          <strong>What happens next?</strong><br>
+          1. Check your email (${state.email}) for your detailed proposal<br>
+          2. We'll reach out within 24 hours to schedule your free consultation<br>
+          3. During the call, we'll discuss your vision and answer any questions<br><br>
+          <em>Can't wait? Call us now at (714) 555-SAUCE</em>
+        </div>
+      `;
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      
+      // Clear saved state after successful submission
+      localStorage.removeItem(STATE_KEY);
+      
     }catch(err){
       console.error(err);
-      status.innerHTML = `<div class="alert">We couldn’t reach the server. Please retry in a moment.</div>`;
+      status.innerHTML = `
+        <div class="alert">
+          <strong>Oops! Something went wrong.</strong><br>
+          Please try again, or email us directly at <strong>hello@sauce-studios.com</strong><br>
+          Your quote details have been saved locally.
+        </div>
+      `;
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     }finally{
-      if (btn) { btn.disabled = false; btn.textContent = 'Submit Build'; }
+      if(btn){ btn.disabled = false; btn.textContent = 'Get My Custom Proposal →'; }
     }
   }
 
   function buildPayload(){
-    const selected = {};
-    let total = 0;
+    let oneTimeTotal = 0;
+    let monthlyTotal = 0;
+    const selections = {};
 
-    groupKeys.forEach(k=>{
-      const cfg = CATALOG[k];
-      const sel = state[k];
-      if(cfg.type==="multi"){
-        const items = (sel||[]).map(id => cfg.options.find(o=>o.id===id)).filter(Boolean);
-        selected[k] = items.map(o=>({id:o.id,name:o.name,price:o.price}));
-        total += items.reduce((s,o)=>s+o.price,0);
-      }else if(sel){
-        const o = cfg.options.find(o=>o.id===sel);
-        if(o){ selected[k] = {id:o.id,name:o.name,price:o.price}; total += o.price; }
-      }
-    });
+    if(state.package){
+      const pkg = PACKAGES[state.package];
+      selections.package = { id: pkg.id, name: pkg.name, price: pkg.price };
+      oneTimeTotal += pkg.price;
+    }
 
-    const details = {
-      name: state.name || "",
-      email: state.email || "",
-      phone: state.phone || "",
-      van: state.van || "",
-      install: state.install || "",
-      timeline: state.timeline || "",
-      notes: state.notes || ""
-    };
+    if(state.oneTime && state.oneTime.length){
+      selections.oneTimeAddons = state.oneTime.map(id=>{
+        const addon = ONE_TIME_ADDONS[id];
+        oneTimeTotal += addon.price;
+        return { id: addon.id, name: addon.name, price: addon.price };
+      });
+    }
+
+    if(state.monthly && state.monthly.length){
+      selections.monthlyAddons = state.monthly.map(id=>{
+        const addon = MONTHLY_ADDONS[id];
+        monthlyTotal += addon.price;
+        return { id: addon.id, name: addon.name, price: addon.price };
+      });
+    }
 
     return {
-      meta:{ source:"vantopia_wizard_v2", submittedAt: new Date().toISOString() },
-      selections:selected,
-      subtotal: total,
-      details
+      meta: {
+        source: "sauce_studios_quote_builder_v2",
+        submittedAt: new Date().toISOString(),
+        userAgent: navigator.userAgent
+      },
+      selections,
+      pricing: {
+        oneTimeTotal,
+        monthlyTotal
+      },
+      clientDetails: {
+        name: state.name || "",
+        business: state.business || "",
+        email: state.email || "",
+        phone: state.phone || "",
+        industry: state.industry || "",
+        timeline: state.timeline || "",
+        currentWebsite: state.website || "",
+        goals: state.goals || ""
+      }
     };
   }
 
-  /* ======== 7) HELPERS ======== */
-  function leadText(key){
-    return ({
-      bed_base:"Select your base cabinetry layout.",
-      flooring:"Choose your insulated floor system.",
-      panels:"Pick your wall & ceiling panels.",
-      front_module:"Add a front module (optional).",
-      accessories:"Finish with optional accessories."
-    })[key] || "";
-  }
   function optionList(arr, cur){
-    return ['<option value="" disabled selected hidden>Select...</option>',...arr.map(x=>`<option ${cur===x?'selected':''}>${x}</option>`)].join("");
+    return arr.map(x=>`<option ${cur===x?'selected':''}>${x}</option>`).join("");
   }
-  function persist(){ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }
-  function div(c){ const e=document.createElement("div"); if(c) e.className=c; return e; }
-  function span(t){ const e=document.createElement("span"); e.textContent=t; return e; }
-  function imgTag(src,alt){ const i=new Image(); i.src=src; i.alt=alt; return i; }
-  function button(cls,txt,fn){ const b=document.createElement("button"); b.type="button"; b.className="btn "+cls; b.textContent=txt; b.onclick=fn; return b; }
-  function row(l,r){ const e=div("sum-row"); const L=span(l); const R=span(r); e.append(L,R); return e; }
 
-  function checkboxEl(on=false){
-    const box = div("checkbox"); box.setAttribute("data-on", on?"true":"false");
+  function persist(){ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }
+  
+  function div(c){ 
+    const e = document.createElement("div"); 
+    if(c) e.className = c; 
+    return e; 
+  }
+  
+  function span(t){ 
+    const e = document.createElement("span"); 
+    e.textContent = t; 
+    return e; 
+  }
+  
+  function button(cls, txt, fn){ 
+    const b = document.createElement("button"); 
+    b.type = "button"; 
+    b.className = "btn "+cls; 
+    b.textContent = txt; 
+    b.onclick = fn; 
+    return b; 
+  }
+  
+  function row(l, r){ 
+    const e = div("sum-row"); 
+    const L = span(l); 
+    L.className = "label"; 
+    const R = span(r); 
+    e.append(L, R); 
+    return e; 
+  }
+
+  function checkboxEl(on = false){
+    const box = div("checkbox");
     const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
     svg.setAttribute("viewBox","0 0 24 24");
     const path = document.createElementNS("http://www.w3.org/2000/svg","path");
